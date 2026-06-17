@@ -3,13 +3,19 @@ const router = require('express').Router()
 const { Blog } = require('../models')
 
 router.get('/', async (req, res) => {
-  const blogs = await Blog.findAll()
+  const blogs = await Blog.findAll({
+    attributes: { exclude: ['userId'] },
+    include: {
+      model: User,
+      attributes: ['name'],
+    },
+  })
   res.json(blogs)
 })
 
 router.post('/', async (req, res, next) => {
   try {
-    const blog = await Blog.create({... req.body })
+    const blog = await Blog.create({... req.body }) // TODO UPDATE
     res.json(blog)
   } catch(error) {
     next(error)

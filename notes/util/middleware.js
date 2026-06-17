@@ -8,7 +8,9 @@ const errorHandler = (error, req, res, next) => {
     return res.status(400).json({ error: error.message })
   }
 
-  next(error)
+  else {
+    return res.status(500).json({ error: error.message })
+  }
 }
 
 const unknownEndpoint = (request, response) => {
