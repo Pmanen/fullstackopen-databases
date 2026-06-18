@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "Blog API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('token', json.token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "http://localhost:3001/api/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\": \"pmanen\", \"password\": \"secret\"}"
+        }
+      }
+    },
+    {
+      "name": "Create Blog",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "http://localhost:3001/api/blogs/",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"test blog\", \"author\": \"Pippen\", \"url\": \"spele.nl\", \"likes\": 3}"
+        }
+      }
+    }
+  ]
+}
