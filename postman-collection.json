@@ -4,7 +4,8 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "token", "value": "" }
+    { "key": "token", "value": "" },
+    { "key": "blogId", "value": "" }
   ],
   "item": [
     {
@@ -32,6 +33,17 @@
     },
     {
       "name": "Create Blog",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('blogId', json.id);"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -43,6 +55,16 @@
           "mode": "raw",
           "raw": "{\"title\": \"test blog\", \"author\": \"Pippen\", \"url\": \"spele.nl\", \"likes\": 3}"
         }
+      }
+    },
+    {
+      "name": "Delete Blog",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "http://localhost:3001/api/blogs/{{blogId}}"
       }
     }
   ]
