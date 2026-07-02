@@ -8,11 +8,11 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      createdAt: {
+      created_at: {
         type: DataTypes.DATE,
         allowNull: false,
       },
-      updatedAt: {
+      updated_at: {
         type: DataTypes.DATE,
         allowNull: false,
       },
@@ -28,7 +28,7 @@ module.exports = {
           type: DataTypes.STRING,
           allowNull: false
         },
-      passwordHash: {
+      password_hash: {
           type: DataTypes.STRING,
           allowNull: false
         },
@@ -39,11 +39,11 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      createdAt: {
+      created_at: {
         type: DataTypes.DATE,
         allowNull: false,
       },
-      updatedAt: {
+      updated_at: {
         type: DataTypes.DATE,
         allowNull: false,
       },
@@ -76,7 +76,7 @@ module.exports = {
     })
   },
 
-  down: async (queryInterface, Sequelize) => {
+  down: async ({ context: queryInterface }) => {
     await queryInterface.dropTable('blogs')
     await queryInterface.dropTable('users')
   }
