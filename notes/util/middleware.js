@@ -4,6 +4,12 @@ const errorHandler = (error, req, res, next) => {
   if (error.name === 'SequelizeValidationError') {
     return res.status(400).json({ error: error.message })
   }
+  if (error.name === 'SequelizeForeignKeyConstraintError') {
+    return res.status(400).json({ error: `referenced ${error.fields ?? error.index} does not exist` })
+  }
+  if (error.name === 'SequelizeUniqueConstraintError') {
+    return res.status(400).json({ error: error.errors.map(e => e.message).join(', ') })
+  }
   if (error.name === 'SequelizeDatabaseError') {
     return res.status(400).json({ error: error.message })
   }
