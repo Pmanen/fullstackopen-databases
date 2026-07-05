@@ -1,6 +1,7 @@
 const router = require('express').Router()
 
 const { User, Note, ReadingList } = require('../models')
+const { tokenExtractor } = require('../util/middleware')
 
 router.post('/', async (req, res) => {
   try {
@@ -13,6 +14,27 @@ router.post('/', async (req, res) => {
     res.json(readListItem)
   } catch (error) {
     return res.status(400).json(error.message)
+  }
+})
+
+router.put('/:id', tokenExtractor, async (req, res, next) => {
+  try {
+    const readListItem = await ReadingList.findByPk(req.params.id)
+    if (!readListItem) {
+      return res.status(404).json({ error: 'Reading list item not found' })
+    }
+    if (req.decodedToken.id !== readListItem.userId) {
+      return res.status(401).json({ error: 'Not authorized to update this reading list item' })
+    }
+    if (req.body.read !== true) {
+      return res.status(400).json({ error: 'Need to send requests to this route with field: read and value: true'})
+    }
+    await readListItem.update({
+      read: true,
+    })
+    res.json(readListItem)
+  } catch (error) {
+    next(error)
   }
 })
 
