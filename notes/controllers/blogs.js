@@ -2,7 +2,7 @@ const router = require('express').Router()
 const { Op } = require('sequelize')
 
 const { Blog, User } = require('../models')
-const { tokenExtractor } = require('../util/middleware')
+const { sessionAuth } = require('../util/middleware')
 
 router.get('/', async (req, res) => {
   let where = {}
@@ -26,10 +26,9 @@ router.get('/', async (req, res) => {
   res.json(blogs)
 })
 
-router.post('/', tokenExtractor, async (req, res, next) => {
+router.post('/', sessionAuth, async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.decodedToken.id)
-    const blog = await Blog.create({... req.body, userId: user.id })
+    const blog = await Blog.create({... req.body, userId: req.user.id })
     res.json(blog)
   } catch(error) {
     next(error)
@@ -58,9 +57,9 @@ router.put('/:id', blogFinder, async (req, res, next) => {
   }
 })
 
-router.delete('/:id', tokenExtractor, blogFinder, async (req, res, next) => {
+router.delete('/:id', sessionAuth, blogFinder, async (req, res, next) => {
   try {
-    if (req.decodedToken.id !== req.blog.userId) {
+    if (req.user.id !== req.blog.userId) {
       return res.status(401).json({ error: 'not authorized' })
     }
     await req.blog.destroy()
